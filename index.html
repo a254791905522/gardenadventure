@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seed Grow Garden Adventure — Relaxing Arcade Puzzle on iPhone</title>
+    <meta name="description" content="Seed Grow Garden Adventure: aim seeds into targets, grow trees, unlock levels. A calm arcade puzzle with colorful farms, simple controls, and satisfying growth. Free on the App Store.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,600&family=Nunito:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #e8f5e3;
+            min-height: 100vh;
+            color: #2a4028;
+            overflow-x: hidden;
+        }
+
+        .sun-glow {
+            position: fixed;
+            top: -120px;
+            right: -80px;
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(255, 220, 120, 0.55) 0%, rgba(255, 235, 180, 0.2) 45%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .field-pattern {
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(ellipse 100% 40% at 50% 100%, rgba(76, 140, 74, 0.12) 0%, transparent 55%),
+                repeating-linear-gradient(
+                    -12deg,
+                    transparent,
+                    transparent 48px,
+                    rgba(61, 120, 58, 0.04) 48px,
+                    rgba(61, 120, 58, 0.04) 49px
+                );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .wrap {
+            position: relative;
+            z-index: 1;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 32px 20px 56px;
+        }
+
+        .top-strip {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .seed-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            background: linear-gradient(135deg, #c4a35a 0%, #8b6914 100%);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+        }
+
+        .top-strip span {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: #4a7c46;
+        }
+
+        .hero-card {
+            background: linear-gradient(165deg, #ffffff 0%, #f2f9ef 100%);
+            border-radius: 28px;
+            border: 2px solid rgba(74, 124, 70, 0.2);
+            box-shadow:
+                0 24px 48px rgba(45, 90, 39, 0.12),
+                0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+            padding: 40px 36px 36px;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(124, 179, 66, 0.18);
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #3d6b38;
+            margin-bottom: 22px;
+        }
+
+        .icon-grow {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 22px;
+            border-radius: 24px;
+            background: linear-gradient(160deg, #7cb342 0%, #558b2f 50%, #33691e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 52px;
+            line-height: 1;
+            box-shadow:
+                0 12px 28px rgba(51, 105, 30, 0.35),
+                inset 0 2px 0 rgba(255, 255, 255, 0.25);
+        }
+
+        h1 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-weight: 800;
+            font-size: clamp(1.85rem, 5vw, 2.45rem);
+            color: #1e3d1c;
+            line-height: 1.15;
+            margin-bottom: 10px;
+            font-variation-settings: 'SOFT' 50, 'WONK' 1;
+        }
+
+        .subtitle {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-style: italic;
+            color: #5d8f57;
+            margin-bottom: 8px;
+        }
+
+        .tagline {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #c68600;
+            margin-bottom: 26px;
+        }
+
+        .lede {
+            text-align: left;
+            line-height: 1.8;
+            font-size: 1rem;
+            color: #3d5239;
+            margin-bottom: 28px;
+        }
+
+        .lede p + p {
+            margin-top: 14px;
+        }
+
+        .steps {
+            text-align: left;
+            margin-bottom: 28px;
+            padding: 22px 24px;
+            background: linear-gradient(135deg, rgba(255, 248, 220, 0.65) 0%, rgba(232, 245, 227, 0.9) 100%);
+            border-radius: 18px;
+            border: 1px dashed rgba(74, 124, 70, 0.35);
+        }
+
+        .steps h2 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 1.15rem;
+            color: #2d5a27;
+            margin-bottom: 14px;
+        }
+
+        .steps ol {
+            padding-left: 22px;
+            color: #3d5239;
+        }
+
+        .steps li {
+            margin: 10px 0;
+            line-height: 1.65;
+        }
+
+        .steps li::marker {
+            color: #7cb342;
+            font-weight: 700;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 28px;
+            text-align: left;
+        }
+
+        .feature-pill {
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 14px;
+            border: 1px solid rgba(74, 124, 70, 0.15);
+            font-size: 0.92rem;
+            color: #3d5239;
+            line-height: 1.45;
+        }
+
+        .feature-pill strong {
+            display: block;
+            font-family: 'Fraunces', Georgia, serif;
+            color: #2d5a27;
+            font-size: 0.88rem;
+            margin-bottom: 4px;
+        }
+
+        .meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .chip {
+            padding: 8px 14px;
+            background: #fff;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #4a7c46;
+            border: 1px solid rgba(74, 124, 70, 0.2);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 16px 36px;
+            background: linear-gradient(180deg, #66bb6a 0%, #43a047 100%);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.05rem;
+            border-radius: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 0 8px 24px rgba(67, 160, 71, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(67, 160, 71, 0.5);
+            color: #fff;
+        }
+
+        .footer {
+            margin-top: 28px;
+            padding-top: 22px;
+            border-top: 1px solid rgba(74, 124, 70, 0.15);
+            font-size: 0.9rem;
+            color: #5a7056;
+        }
+
+        .footer a {
+            color: #2e7d32;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .footer p {
+            margin: 6px 0;
+        }
+
+        @media (max-width: 560px) {
+            .hero-card {
+                padding: 28px 22px 26px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sun-glow" aria-hidden="true"></div>
+    <div class="field-pattern" aria-hidden="true"></div>
+
+    <div class="wrap">
+        <div class="top-strip">
+            <span class="seed-dot" aria-hidden="true"></span>
+            <span>Grow &amp; Play</span>
+        </div>
+
+        <div class="hero-card">
+            <div class="hero-badge">Free · iPhone · Puzzle</div>
+            <div class="icon-grow" role="img" aria-label="Growing plant">🌱</div>
+            <h1>Seed Grow Garden Adventure</h1>
+            <p class="subtitle">Relaxing arcade puzzle</p>
+            <p class="tagline">Aim true. Watch your garden come alive.</p>
+
+            <div class="lede">
+                <p>Seed Grow Garden Adventure is a relaxing arcade puzzle where you carefully aim seeds into targets to grow beautiful trees and unlock the next level. Each successful shot helps your garden flourish — tiny sprouts become tall, lively plants while your timing and accuracy are gently tested.</p>
+                <p>Simple controls, colorful farm settings, and satisfying growth animations make every stage a calm yet rewarding challenge for all ages. Progress through levels, complete growth goals, and enjoy your garden transforming with every perfectly placed seed.</p>
+            </div>
+
+            <div class="steps">
+                <h2>How it works</h2>
+                <ol>
+                    <li>Aim each seed toward the right target — precision and rhythm matter.</li>
+                    <li>Land your shots to grow trees and advance the stage.</li>
+                    <li>Meet growth goals to unlock new levels and richer garden scenes.</li>
+                    <li>Relax, replay, and refine your shots at your own pace.</li>
+                </ol>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-pill"><strong>Arcade puzzle flow</strong>Calm challenges built around aim and timing.</div>
+                <div class="feature-pill"><strong>Farm &amp; garden art</strong>Bright, friendly environments to explore.</div>
+                <div class="feature-pill"><strong>Growth you can feel</strong>Animations that reward every good placement.</div>
+                <div class="feature-pill"><strong>All ages</strong>Easy to pick up; depth for players who want to master it.</div>
+            </div>
+
+            <div class="meta-row">
+                <span class="chip">Games</span>
+                <span class="chip">English</span>
+                <span class="chip">4+</span>
+                <span class="chip">~39 MB</span>
+                <span class="chip">iOS 15.0+</span>
+            </div>
+
+            <a href="https://apps.apple.com/us/app/seed-grow-garden-adventure/id6760179805?uo=4" class="btn" target="_blank" rel="noopener noreferrer">
+                Download on the App Store
+            </a>
+
+            <div class="footer">
+                <p><a href="/privacy.html">Privacy Policy</a></p>
+                <p>Developer: <a href="https://litzin.com/" target="_blank" rel="noopener noreferrer">Dipak Keshariya</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
